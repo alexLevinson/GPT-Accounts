@@ -1,2 +1,1 @@
-# GPT-Accounts
-Public for now
+GPT Accounts

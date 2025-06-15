@@ -1,0 +1,36 @@
+name: Run Simulation
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+jobs:
+  run-simulation:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      
+      - name: Build image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          load: true
+          tags: gpt-accounts:latest
+      
+      - name: Create .env file
+        run: |
+          echo "BROWSERBASE_API_KEY=${{ secrets.BROWSERBASE_API_KEY }}" >> .env
+          echo "BROWSERBASE_PROJECT_ID=${{ secrets.BROWSERBASE_PROJECT_ID }}" >> .env
+          echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> .env
+          echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" >> .env
+          echo "NUM_ACCOUNTS=${{ secrets.NUM_ACCOUNTS }}" >> .env
+
+
+      - name: Run container with .env file
+        run: |
+          docker run --rm --env-file .env gpt-accounts:latest
