@@ -1,4 +1,4 @@
-name: Run Simulation
+name: Create accounts
 
 on:
   schedule:
