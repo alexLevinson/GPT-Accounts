@@ -36,7 +36,7 @@ function sleep(min, max) {
       // Create a new browser session with proxies
       session = await bb.sessions.create({
         projectId: BROWSERBASE_PROJECT_ID,
-        proxies: true
+        proxies: false
       });
 
       // Connect to the browser session
