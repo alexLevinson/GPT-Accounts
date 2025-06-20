@@ -53,17 +53,21 @@ function sleep(min, max) {
 
       await sleep(1500, 3000);
 
-      // Move mouse to login button first, then click
-      const loginButton = await page.locator('button[data-testid="login-button"]').first();
-      const loginButtonBox = await loginButton.boundingBox();
-      await page.mouse.move(
-        loginButtonBox.x + loginButtonBox.width / 2,
-        loginButtonBox.y + loginButtonBox.height / 2,
-        { steps: 10 }
-      );
-      await sleep(300, 800);
-      await loginButton.click();
-      console.log("Initiated Auth Flow");
+      try {
+        // Move mouse to login button first, then click
+        const loginButton = await page.locator('button[data-testid="login-button"]', { timeout: 10000 }).first();
+        const loginButtonBox = await loginButton.boundingBox();
+        await page.mouse.move(
+          loginButtonBox.x + loginButtonBox.width / 2,
+          loginButtonBox.y + loginButtonBox.height / 2,
+          { steps: 10 }
+        );
+        await sleep(300, 800);
+        await loginButton.click();
+        console.log(`Initiated Auth Flow`);
+      } catch (error) {
+        console.log(`No login button found, continuing anyway`);
+      }
 
       await sleep(800, 2000);
 
