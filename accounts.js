@@ -36,7 +36,7 @@ function sleep(min, max) {
       // Create a new browser session with proxies
       session = await bb.sessions.create({
         projectId: BROWSERBASE_PROJECT_ID,
-        proxies: false
+        proxies: true
       });
 
       // Connect to the browser session
@@ -72,7 +72,7 @@ function sleep(min, max) {
       await sleep(800, 2000);
 
       // Move mouse to and click the "Sign up" link on the auth page
-      const signupLink = await page.locator('a[href="/create-account"]');
+      const signupLink = await page.locator('a[href="/create-account"]', { timeout: 45000 });
       const signupLinkBox = await signupLink.boundingBox();
       await page.mouse.move(
         signupLinkBox.x + signupLinkBox.width / 2,
@@ -134,10 +134,14 @@ function sleep(min, max) {
 
       password = generatePassword(12);
       console.log("Generated password:", password);
-      await page.waitForSelector('input[id=":ru:-password"]');
+      try {
+        await page.waitForSelector('input[name="new-password"]', { timeout: 30000 });
+      } catch (error) {
+        console.log("Error waiting for password input, page content:", await page.content());
+      }
 
       // Move mouse to password field and click
-      const passwordInput = await page.locator('input[id=":ru:-password"]');
+      const passwordInput = await page.locator('input[name="new-password"]');
       const passwordInputBox = await passwordInput.boundingBox();
       await page.mouse.move(
         passwordInputBox.x + passwordInputBox.width / 2,
